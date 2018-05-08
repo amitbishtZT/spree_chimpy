@@ -66,11 +66,21 @@ module Spree::Chimpy
           order_variant_hash(line)
         end
 
+        temp_financial_status = ""
+        case @order.payment_state
+        when "pending"
+          temp_financial_status = "pending"
+        when "completed"
+          temp_financial_status = "paid"
+        else
+          ""
+        end
+
         data = {
           id:                @order.number,
           lines:             lines,
           order_total:       @order.total.to_f,
-          financial_status:  @order.payment_state || "",
+          financial_status:  temp_financial_status,
           fulfillment_status: @order.shipment_state || "",
           currency_code:     @order.currency,
           processed_at_foreign:  @order.completed_at ? @order.completed_at.to_formatted_s(:db) : "",
